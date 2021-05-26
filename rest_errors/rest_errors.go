@@ -37,3 +37,11 @@ func NewInternalServerError(message string) *RestErr {
 		Error:   "internal_server_error",
 	}
 }
+
+func NewInvalidInputError(message string) *RestErr {
+	return &RestErr{
+		Message: message,
+		Status:  http.StatusNotAcceptable,
+		Error:   "invalid input",
+	}
+}
