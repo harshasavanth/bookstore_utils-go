@@ -7,7 +7,7 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
-	"github.com/harshasavanth/bookstore_utils-go/rest_errors"
+	"github.com/harshasavanth/utils-go/rest_errors"
 	"io"
 )
 
@@ -27,26 +27,26 @@ func Encrypt(stringToEncrypt string) (string, *rest_errors.RestErr) {
 	//Create a new Cipher Block from the key
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return "", rest_errors.NewInvalidInputError("could not geberate link")
+		return "", rest_errors.NewInvalidInputError("could not geberate link1")
 	}
 
 	//Create a new GCM - https://en.wikipedia.org/wiki/Galois/Counter_Mode
 	//https://golang.org/pkg/crypto/cipher/#NewGCM
 	aesGCM, err := cipher.NewGCM(block)
 	if err != nil {
-		return "", rest_errors.NewInvalidInputError("could not geberate link")
+		return "", rest_errors.NewInvalidInputError("could not geberate link2")
 	}
 
 	//Create a nonce. Nonce should be from GCM
 	nonce := make([]byte, aesGCM.NonceSize())
 	if _, err = io.ReadFull(rand.Reader, nonce); err != nil {
-		return "", rest_errors.NewInvalidInputError("could not geberate link")
+		return "", rest_errors.NewInvalidInputError("could not geberate link3")
 	}
 
 	//Encrypt the data using aesGCM.Seal
 	//Since we don't want to save the nonce somewhere else in this case, we add it as a prefix to the encrypted data. The first nonce argument in Seal is the prefix.
 	ciphertext := aesGCM.Seal(nonce, nonce, plaintext, nil)
-	return fmt.Sprintf("%x", ciphertext), rest_errors.NewInvalidInputError("could not geberate link")
+	return fmt.Sprintf("%x", ciphertext), rest_errors.NewInvalidInputError("could not geberate link4")
 }
 
 func Decrypt(encryptedString string) (string, *rest_errors.RestErr) {
