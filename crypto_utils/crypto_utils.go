@@ -7,8 +7,10 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"github.com/harshasavanth/bookstore_users-api/logger"
 	"github.com/harshasavanth/utils-go/rest_errors"
 	"io"
+	"os"
 )
 
 func GetMd5(input string) string {
@@ -18,10 +20,14 @@ func GetMd5(input string) string {
 	return hex.EncodeToString(hash.Sum(nil))
 }
 
+const (
+	key = "key"
+)
+
 func Encrypt(stringToEncrypt string) (string, *rest_errors.RestErr) {
 
 	//Since the key is in string, we need to convert decode it to bytes
-	key, _ := hex.DecodeString("52fdfc072182654f163f5f0f9a621d729566c74d10037c4d7bbb0407d1e2c649")
+	key, _ := hex.DecodeString(os.Getenv(key))
 	plaintext := []byte(stringToEncrypt)
 
 	//Create a new Cipher Block from the key
@@ -50,8 +56,8 @@ func Encrypt(stringToEncrypt string) (string, *rest_errors.RestErr) {
 }
 
 func Decrypt(encryptedString string) (string, *rest_errors.RestErr) {
-
-	key, _ := hex.DecodeString("52fdfc072182654f163f5f0f9a621d729566c74d10037c4d7bbb0407d1e2c649")
+	logger.Info(encryptedString)
+	key, _ := hex.DecodeString(os.Getenv(key))
 	enc, _ := hex.DecodeString(encryptedString)
 
 	//Create a new Cipher Block from the key
@@ -77,6 +83,6 @@ func Decrypt(encryptedString string) (string, *rest_errors.RestErr) {
 	if err != nil {
 		return "", rest_errors.NewBadRequestError("invalid link")
 	}
-
+	logger.Info(string(plaintext))
 	return fmt.Sprintf("%s", plaintext), nil
 }
